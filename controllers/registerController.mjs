@@ -26,7 +26,5 @@ export const registerController = async (req, res) => {
   
   usersList.push(user);
 
-  console.log(usersList);
-
   res.json({ message: "ok" });
 };

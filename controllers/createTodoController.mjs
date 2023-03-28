@@ -2,6 +2,11 @@ import { listJSON } from "../data/list.mjs";
 import { v4 as createId } from "uuid";
 
 export const createTodoController = (req, res) => {
+  if (!req.user) {
+    res.status(403).json({ message: "User not logged in." });
+    return;
+  }
+
   const id = createId();
   const { title, description, completed } = req.body;
 
@@ -18,7 +23,7 @@ export const createTodoController = (req, res) => {
     return;
   }
   // užduotis: patikrinti duomenis remove ir replace endpointuose.
-  
+
   // Create Todo
   const todo = {
     _id: id,
@@ -27,7 +32,10 @@ export const createTodoController = (req, res) => {
     completed,
   };
 
-  listJSON.documents.push(todo);
+  if (!listJSON[req.user._id]) {
+    listJSON[req.user._id] = [];
+  }
+  listJSON[req.user._id].push(todo);
 
   res.json({
     insertedId: id,
